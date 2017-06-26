@@ -162,10 +162,20 @@ void FCB::seek(uint relativeTo, int bytes)
 	{
 		while (sectors)
 		{
-			if(sectors%2)
+			if (sectors % 2) // first sector in cluster
+				currSecNr++;	
+			else			// second sector in cluster -- move on to next cluster
 				while (!FAT[currSecNr++ / 2]);
-			
+			sectors--;
 		}
+	}
+	else // move backwards
+	{
+		if (!sectors % 2) // second sector in cluster -- move back one sector
+			currSecNr--;
+		else              // move on to previous cluster
+			while (!FAT[currSecNr-- / 2]);
+		sectors++;
 	}
 }
 
