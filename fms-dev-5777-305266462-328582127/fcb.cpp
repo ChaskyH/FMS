@@ -199,6 +199,45 @@ bool FCB::eof()
 
 void FCB::print()
 {
-	cout << "Class: FCB, Function: print file" << endl;
+	if (mode == NONE)
+		throw "ERROR: nothing to print yet, no file associated.";
 
+	cout << "File information:" << endl;
+	cout << "---------------------" << endl;
+	cout << "Name: " << fileDesc.fileName << endl;
+	cout << "Author: " << fileDesc.fileOwner << endl;
+	cout << "Created on: " << string(fileDesc.crDate, 8) << endl;
+	cout << "Size: " << fileDesc.fileSize << " bytes" << endl;
+	cout << "Size on disk: " << (fileDesc.fileSectors + 1) * 1024 << " bytes" << endl << endl;
+
+	cout << "File Allocation Table: " << endl;
+	cout << "----------------------" << endl;
+	cout << FAT << endl << endl;
+
+	cout << "File Data Information: " << endl;
+	cout << "----------------------" << endl;
+	cout << "File mode: ";
+	switch (mode)
+	{
+	case READ:
+		cout << "read only";
+		break;
+	case WRITE:
+		cout << "write";
+		break;
+	case APPEND:
+		cout << "append";
+		break;
+	case READWRITE:
+		cout << "read & write";
+		break;
+	default:
+		break;
+	}
+	cout << endl;
+
+	cout << "Byte in file: " << currByte << endl;
+	cout << "Byte in buffer: " << currByteInBuff << endl;
+	cout << "Buffer #: " << currByteInBuff <<endl;
+	cout << "Cluster #: " << currSecNr << endl;
 }
