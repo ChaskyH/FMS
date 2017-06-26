@@ -3,7 +3,6 @@
 
 class FCB
 {
-	//
 public:
 	Disk* d;
 	DirEntry fileDesc;
@@ -20,12 +19,9 @@ public:
 	void openFile(Disk *, string &, string &, uint);
 	void closeFile();
 	void flushFile();
-	unsigned int read(char *, unsigned int);
+	uint read(char *, unsigned int);
 	void write(char *, unsigned int);
-	void readBuffer();
-	void writeBuffer();
 	void seek(uint, int);
-	void seekBuffer(uint relativeTo, int sectors);
 	void remove();
 	bool eof();
 	void print();

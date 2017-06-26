@@ -66,7 +66,7 @@ unsigned int FCB::read(char* dst, uint size = 0)
 		{
 			if (currByteInBuff == BUFFER_SIZE) // next buffer
 			{
-				readBuffer();
+				
 			}
 			dst[i] = buffer.rawData[currByteInBuff];
 		}
@@ -76,7 +76,7 @@ unsigned int FCB::read(char* dst, uint size = 0)
 		while (buffer.rawData[currByteInBuff] != '\n' && size > 200 && !eof()) // no size specified
 		{
 			if (currByteInBuff == BUFFER_SIZE)
-				readBuffer();
+				
 			dst[size] = buffer.rawData[currByteInBuff];
 			currByte++, currByteInBuff++, size++;
 		}
@@ -93,25 +93,6 @@ void FCB::write(char *, unsigned int)
 
 }
 
-void FCB::readBuffer()
-{
-	// read current sector
-	d->readSector(currSecNr, &buffer);
-	currByteInBuff = 0;
-
-	// update currSecNr to next sector
-	//while (!FAT[++currSecNr]);
-}
-
-void FCB::writeBuffer()
-{
-	// write current buffer 
-	d->writeSector(currSecNr, &buffer);
-	currByteInBuff = 0;
-
-	/* update currSecNr to next sector
-	while (!FAT[++currSecNr]);*/
-}
 void FCB::seek(uint relativeTo, int bytes)
 {
 	int sectors; // the amount of sector to move
@@ -183,34 +164,11 @@ void FCB::seek(uint relativeTo, int bytes)
 		{
 			if(sectors%2)
 				while (!FAT[currSecNr++ / 2]);
-			6
+			
 		}
 	}
 }
 
-void FCB::seekBuffer(uint relativeTo, int sectors)
-{
-	currSecNr = fileDesc.fileAddr + 1; // second sector in first cluster
-	if (relativeTo == END)
-	{
-		sectors = fileDesc.fileSectors - 1 + sectors; 
-	}
-	if (relativeTo == CURRENT)
-	{
-		sectors = (int)(currByte / 1020.0 + 1019/1020.0) + sectors;
-	}
-	if (sectors >= fileDesc.fileSectors)
-	{
-		sectors = fileDesc.fileSectors - 1;
-		currByte = fileDesc.fileSize;
-	}
-	if (sectors < 0)
-		sectors = 0;
-	for (int i = 0; i < sectors; ++currSecNr)
-		if (FAT[currSecNr / 2])
-			i++;
-
-}
 
 void FCB::remove()
 {
