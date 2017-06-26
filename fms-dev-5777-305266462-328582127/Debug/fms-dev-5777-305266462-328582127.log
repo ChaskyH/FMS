@@ -1,0 +1,8 @@
+﻿  disk.cpp
+c:\users\chasky hoffmann\documents\visual studio 2015\projects\fms-dev-5777-305266462-328582127\fms-dev-5777-305266462-328582127\disk.cpp(278): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\chasky hoffmann\documents\visual studio 2015\projects\fms-dev-5777-305266462-328582127\fms-dev-5777-305266462-328582127\disk.cpp(318): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\chasky hoffmann\documents\visual studio 2015\projects\fms-dev-5777-305266462-328582127\fms-dev-5777-305266462-328582127\disk.cpp(354): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\chasky hoffmann\documents\visual studio 2015\projects\fms-dev-5777-305266462-328582127\fms-dev-5777-305266462-328582127\disk.cpp(378): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\chasky hoffmann\documents\visual studio 2015\projects\fms-dev-5777-305266462-328582127\fms-dev-5777-305266462-328582127\disk.cpp(379): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  fms-dev-5777-305266462-328582127.vcxproj -> C:\Users\Chasky Hoffmann\Documents\Visual Studio 2015\Projects\fms-dev-5777-305266462-328582127\Debug\fms-dev-5777-305266462-328582127.exe
+  fms-dev-5777-305266462-328582127.vcxproj -> C:\Users\Chasky Hoffmann\Documents\Visual Studio 2015\Projects\fms-dev-5777-305266462-328582127\Debug\fms-dev-5777-305266462-328582127.pdb (Full PDB)
