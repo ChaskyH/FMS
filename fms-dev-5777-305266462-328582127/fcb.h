@@ -18,6 +18,7 @@ public:
 
 	void openFile(Disk *, string &, string &, uint);
 
+
 	void closeFile();
 	void flushFile();
 	uint read(char *, uint);
