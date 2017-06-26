@@ -1,5 +1,12 @@
-﻿  main.cpp
-c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\main.cpp(8): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
-  LINK : C:\Users\chasky\Documents\GitHub\FMS\Debug\fms-dev-5777-305266462-328582127.exe not found or not built by the last incremental link; performing full link
+﻿  disk.cpp
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\disk.cpp(278): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\disk.cpp(318): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\disk.cpp(354): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\disk.cpp(378): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\disk.cpp(379): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  main.cpp
+  fcb.cpp
   fms-dev-5777-305266462-328582127.vcxproj -> C:\Users\chasky\Documents\GitHub\FMS\Debug\fms-dev-5777-305266462-328582127.exe
   fms-dev-5777-305266462-328582127.vcxproj -> C:\Users\chasky\Documents\GitHub\FMS\Debug\fms-dev-5777-305266462-328582127.pdb (Full PDB)
