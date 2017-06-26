@@ -3,6 +3,7 @@
 
 class FCB
 {
+	//
 public:
 	Disk* d;
 	DirEntry fileDesc;
