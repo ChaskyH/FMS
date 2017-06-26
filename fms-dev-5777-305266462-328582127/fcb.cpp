@@ -51,7 +51,7 @@ void FCB::flushFile()
 	d->writeSector(currSecNr, &buffer);
 }
 
-unsigned int FCB::read(char* dst, uint size = 0)
+uint FCB::read(char* dst, uint size = 0)
 {
 	if (mode == NONE)
 		throw "ERROR: no file to read from.";
@@ -87,7 +87,7 @@ unsigned int FCB::read(char* dst, uint size = 0)
 	return size;
 }
 
-void FCB::write(char *, unsigned int)
+void FCB::write(char *, uint)
 {
 	cout << "Class: FCB, Function: write file" << endl;
 

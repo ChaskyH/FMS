@@ -7,11 +7,11 @@ public:
 	Disk* d;
 	DirEntry fileDesc;
 	DATtype FAT;
-	unsigned int mode;
+	uint mode;
 	Sector buffer;
-	unsigned int currByte;
-	unsigned int currSecNr;
-	unsigned int currByteInBuff;
+	uint currByte;
+	uint currSecNr;
+	uint currByteInBuff;
 	FCB();
 	FCB(Disk*);
 	~FCB();
@@ -19,8 +19,8 @@ public:
 	void openFile(Disk *, string &, string &, uint);
 	void closeFile();
 	void flushFile();
-	uint read(char *, unsigned int);
-	void write(char *, unsigned int);
+	uint read(char *, uint);
+	void write(char *, uint);
 	void seek(uint, int);
 	void remove();
 	bool eof();

@@ -13,9 +13,9 @@ void step1();
 string diskName;
 string ownerName;
 string fileName;
-//unsigned int size;
+//uint size;
 char c;
-unsigned int secctorNr;
+uint secctorNr;
 char buffer[1024];
 Disk* ex = nullptr;
 Sector* sec;
@@ -404,7 +404,7 @@ int main() {
 				case 9: // delete
 					try
 					{
-						fcb->del();
+						fcb->remove();
 					}
 					catch (const char* msg)
 					{
