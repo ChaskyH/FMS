@@ -357,7 +357,7 @@ public:
 	**************************************************/
 	void cutFile(string&, string&, uint);
 
-	FCB* openFile(FCB&, string&, string&, uint);
+	void openFile(FCB&, string&, string&, uint);
 
 	void setCheckFile(uint(*f)(Disk*, string &));
 
