@@ -100,7 +100,7 @@ void FCB::seek(uint relativeTo, int bytes)
 	// error handling
 	if (mode == NONE)
 		throw "ERROR: no file assosiated yet.";
-	if (mode == WRITE)
+	if (mode == WRITE || mode == APPEND)
 		throw "ERROR: file open for writing.";
 
 	// flush current sector if needed
