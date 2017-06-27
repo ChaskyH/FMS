@@ -3,16 +3,15 @@
 
 class FCB
 {
-	//
 public:
 	Disk* d;
 	DirEntry fileDesc;
 	DATtype FAT;
-	unsigned int mode;
+	uint mode;
 	Sector buffer;
-	unsigned int currByte;
-	unsigned int currSecNr;
-	unsigned int currByteInBuff;
+	uint currByte;
+	uint currSecNr;
+	uint currByteInBuff;
 	FCB();
 	FCB(Disk*);
 	~FCB();
@@ -20,12 +19,9 @@ public:
 	void openFile(Disk *, string &, string &, uint);
 	void closeFile();
 	void flushFile();
-	unsigned int read(char *, unsigned int);
-	void write(char *, unsigned int);
-	void readBuffer();
-	void writeBuffer();
+	uint read(char *, uint);
+	void write(char *, uint);
 	void seek(uint, int);
-	void seekBuffer(uint relativeTo, int sectors);
 	void remove();
 	bool eof();
 	void print();

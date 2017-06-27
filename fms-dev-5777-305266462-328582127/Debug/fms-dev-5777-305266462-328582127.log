@@ -1,8 +1,21 @@
 ﻿  disk.cpp
-c:\users\chasky hoffmann\documents\visual studio 2015\projects\fms-dev-5777-305266462-328582127\fms-dev-5777-305266462-328582127\disk.cpp(278): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-c:\users\chasky hoffmann\documents\visual studio 2015\projects\fms-dev-5777-305266462-328582127\fms-dev-5777-305266462-328582127\disk.cpp(318): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-c:\users\chasky hoffmann\documents\visual studio 2015\projects\fms-dev-5777-305266462-328582127\fms-dev-5777-305266462-328582127\disk.cpp(354): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-c:\users\chasky hoffmann\documents\visual studio 2015\projects\fms-dev-5777-305266462-328582127\fms-dev-5777-305266462-328582127\disk.cpp(378): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-c:\users\chasky hoffmann\documents\visual studio 2015\projects\fms-dev-5777-305266462-328582127\fms-dev-5777-305266462-328582127\disk.cpp(379): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-  fms-dev-5777-305266462-328582127.vcxproj -> C:\Users\Chasky Hoffmann\Documents\Visual Studio 2015\Projects\fms-dev-5777-305266462-328582127\Debug\fms-dev-5777-305266462-328582127.exe
-  fms-dev-5777-305266462-328582127.vcxproj -> C:\Users\Chasky Hoffmann\Documents\Visual Studio 2015\Projects\fms-dev-5777-305266462-328582127\Debug\fms-dev-5777-305266462-328582127.pdb (Full PDB)
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\disk.cpp(278): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\disk.cpp(318): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\disk.cpp(354): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\disk.cpp(378): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\disk.cpp(379): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  Generating Code...
+cl : Command line warning D9028: minimal rebuild failure, reverting to normal build
+  Compiling...
+  fcb.cpp
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\fcb.h(2): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\fcb.cpp(1): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\fcb.cpp(65): warning C4018: '<': signed/unsigned mismatch
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\fcb.cpp(117): warning C4018: '>': signed/unsigned mismatch
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\fcb.cpp(146): warning C4018: '<': signed/unsigned mismatch
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\fcb.cpp(174): warning C4804: '%': unsafe use of type 'bool' in operation
+  main.cpp
+c:\users\chasky\documents\github\fms\fms-dev-5777-305266462-328582127\main.cpp(8): warning C4103: alignment changed after including header, may be due to missing #pragma pack(pop)
+  Generating Code...
+  fms-dev-5777-305266462-328582127.vcxproj -> C:\Users\chasky\Documents\GitHub\FMS\Debug\fms-dev-5777-305266462-328582127.exe
+  fms-dev-5777-305266462-328582127.vcxproj -> C:\Users\chasky\Documents\GitHub\FMS\Debug\fms-dev-5777-305266462-328582127.pdb (Full PDB)

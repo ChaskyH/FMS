@@ -400,18 +400,22 @@ void Disk::cutFile(string& name, string& owner, uint size)
 	rootDir.updateEntry(fhd.fileDesc);
 }
 
-FCB* Disk::openFile(FCB& fcb, string & name, string & owner = string(), uint mode = READ)
+void Disk::openFile(FCB& fcb, string & name, string & owner = string(), uint mode = READ)
 {
+	// find file in rootdir
 	DirEntry entry = rootDir.findFile(name);
+	
 	if (entry.entryStatus != ACTIVE)
 		throw "ERROR: no file with such a name exist in the disk";
 	if (mode != READ && entry.fileOwner != owner.substr(0, 12))
 		throw "ERROR: only the owner of a file can edit it";
-	if (fcb.mode == READ && mode != READ)
+
+	if (checkFile(this, name) == READ && mode != READ)
 		throw "ERROR: this file is allready open, you can't edit it.";
-	if (fcb.mode == WRITE)
+	if (checkFile(this, name) != NONE && (fcb.mode == WRITE || fcb.mode == APPEND || fcb.mode == READWRITE))
 		throw "ERROR: can't open file. It is already open to read.";
 	
+	// read file header from disk
 	FHD fhd;
 	readSector(entry.fileAddr, &fhd);
 
@@ -419,17 +423,16 @@ FCB* Disk::openFile(FCB& fcb, string & name, string & owner = string(), uint mod
 	fcb.mode = mode;
 	fcb.fileDesc = fhd.fileDesc;
 	
-	int sec;
-	if (mode != APPEND)
-		sec = entry.fileAddr;
-	else
-		for(int i = 0; i < 1600; fhd.fat[i++] && (sec=i));
+	if (mode == WRITE) // trunc file
+		fcb.fileDesc.fileSize = 0;
+	if (mode == APPEND) // move to eof
+		for (int i = 0; i < fcb.fileDesc.fileSize;);
+		
 	
 	fcb.currSecNr = sec;
 	fcb.currByteInBuff = 0;
 	fcb.currByte = 0;
 	fcb.FAT = fhd.fat;
-	return &fcb;
 }
 
 

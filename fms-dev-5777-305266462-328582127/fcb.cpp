@@ -51,7 +51,7 @@ void FCB::flushFile()
 	d->writeSector(currSecNr, &buffer);
 }
 
-unsigned int FCB::read(char* dst, uint size = 0)
+uint FCB::read(char* dst, uint size = 0)
 {
 	if (mode == NONE)
 		throw "ERROR: no file to read from.";
@@ -66,7 +66,7 @@ unsigned int FCB::read(char* dst, uint size = 0)
 		{
 			if (currByteInBuff == BUFFER_SIZE) // next buffer
 			{
-				readBuffer();
+				
 			}
 			dst[i] = buffer.rawData[currByteInBuff];
 		}
@@ -76,7 +76,7 @@ unsigned int FCB::read(char* dst, uint size = 0)
 		while (buffer.rawData[currByteInBuff] != '\n' && size > 200 && !eof()) // no size specified
 		{
 			if (currByteInBuff == BUFFER_SIZE)
-				readBuffer();
+				
 			dst[size] = buffer.rawData[currByteInBuff];
 			currByte++, currByteInBuff++, size++;
 		}
@@ -87,31 +87,12 @@ unsigned int FCB::read(char* dst, uint size = 0)
 	return size;
 }
 
-void FCB::write(char *, unsigned int)
+void FCB::write(char *, uint)
 {
 	cout << "Class: FCB, Function: write file" << endl;
 
 }
 
-void FCB::readBuffer()
-{
-	// read current sector
-	d->readSector(currSecNr, &buffer);
-	currByteInBuff = 0;
-
-	// update currSecNr to next sector
-	//while (!FAT[++currSecNr]);
-}
-
-void FCB::writeBuffer()
-{
-	// write current buffer 
-	d->writeSector(currSecNr, &buffer);
-	currByteInBuff = 0;
-
-	/* update currSecNr to next sector
-	while (!FAT[++currSecNr]);*/
-}
 void FCB::seek(uint relativeTo, int bytes)
 {
 	int sectors; // the amount of sector to move
@@ -119,7 +100,7 @@ void FCB::seek(uint relativeTo, int bytes)
 	// error handling
 	if (mode == NONE)
 		throw "ERROR: no file assosiated yet.";
-	if (mode == WRITE)
+	if (mode == WRITE || mode == APPEND)
 		throw "ERROR: file open for writing.";
 
 	// flush current sector if needed
@@ -181,36 +162,23 @@ void FCB::seek(uint relativeTo, int bytes)
 	{
 		while (sectors)
 		{
-			if(sectors%2)
+			if (sectors % 2) // first sector in cluster
+				currSecNr++;	
+			else			// second sector in cluster -- move on to next cluster
 				while (!FAT[currSecNr++ / 2]);
-			6
+			sectors--;
 		}
 	}
+	else // move backwards
+	{
+		if (!sectors % 2) // second sector in cluster -- move back one sector
+			currSecNr--;
+		else              // move on to previous cluster
+			while (!FAT[currSecNr-- / 2]);
+		sectors++;
+	}
 }
 
-void FCB::seekBuffer(uint relativeTo, int sectors)
-{
-	currSecNr = fileDesc.fileAddr + 1; // second sector in first cluster
-	if (relativeTo == END)
-	{
-		sectors = fileDesc.fileSectors - 1 + sectors; 
-	}
-	if (relativeTo == CURRENT)
-	{
-		sectors = (int)(currByte / 1020.0 + 1019/1020.0) + sectors;
-	}
-	if (sectors >= fileDesc.fileSectors)
-	{
-		sectors = fileDesc.fileSectors - 1;
-		currByte = fileDesc.fileSize;
-	}
-	if (sectors < 0)
-		sectors = 0;
-	for (int i = 0; i < sectors; ++currSecNr)
-		if (FAT[currSecNr / 2])
-			i++;
-
-}
 
 void FCB::remove()
 {
@@ -231,6 +199,45 @@ bool FCB::eof()
 
 void FCB::print()
 {
-	cout << "Class: FCB, Function: print file" << endl;
+	if (mode == NONE)
+		throw "ERROR: nothing to print yet, no file associated.";
 
+	cout << "File information:" << endl;
+	cout << "---------------------" << endl;
+	cout << "Name: " << fileDesc.fileName << endl;
+	cout << "Author: " << fileDesc.fileOwner << endl;
+	cout << "Created on: " << string(fileDesc.crDate, 8) << endl;
+	cout << "Size: " << fileDesc.fileSize << " bytes" << endl;
+	cout << "Size on disk: " << (fileDesc.fileSectors + 1) * 1024 << " bytes" << endl << endl;
+
+	cout << "File Allocation Table: " << endl;
+	cout << "----------------------" << endl;
+	cout << FAT << endl << endl;
+
+	cout << "File Data Information: " << endl;
+	cout << "----------------------" << endl;
+	cout << "File mode: ";
+	switch (mode)
+	{
+	case READ:
+		cout << "read only";
+		break;
+	case WRITE:
+		cout << "write";
+		break;
+	case APPEND:
+		cout << "append";
+		break;
+	case READWRITE:
+		cout << "read & write";
+		break;
+	default:
+		break;
+	}
+	cout << endl;
+
+	cout << "Byte in file: " << currByte << endl;
+	cout << "Byte in buffer: " << currByteInBuff << endl;
+	cout << "Buffer #: " << currByteInBuff <<endl;
+	cout << "Cluster #: " << currSecNr << endl;
 }
