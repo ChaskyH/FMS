@@ -18,20 +18,47 @@ FCB::FCB(Disk* d):FCB()
 FCB::~FCB()
 {
 
-}
+} 
 
 
-void FCB::openFile(Disk * dsk, string & name, string & owner , uint mode)
+void FCB::openFile(Disk * dsk, string & name, string & owner = string() , uint mode = READ)
 {
 	if (d != nullptr)
-		throw "ERROR: this file is already in use..";
+		throw "ERROR: this file control is already in use.";
 	dsk->openFile(*this, name, owner, mode);
+
+
+	if (mode == WRITE) // trunc file
+	{
+		fileDesc.fileSize = 0;
+		currByte = 0;
+		currByteInBuff = 0;		
+	}
+	if (mode == APPEND) // move to eof
+	{
+		for (int i = 0; i < fileDesc.fileSize; i += BUFFER_SIZE)
+		{
+			if (currSecNr % 2)
+				currSecNr++;
+			else
+				while (!FAT[++currSecNr / 2]);
+		}
+		currByte = fileDesc.fileSize;
+		currByteInBuff = currByte % 1020;
+	}
+	if (mode == READ || mode == READWRITE) // read and write at beggining of file
+	{
+		currByte = 0;
+		currByteInBuff = 0;
+		currSecNr = fileDesc.fileAddr + 1;
+		d->readSector(fileDesc.fileAddr + 1,&buffer);
+	}
 }
 
 void FCB::closeFile()
 {
 	if (mode == NONE)
-		throw "ERROR: no open file to close.";
+		throw "ERROR: there is no open file to close.";
 	if(mode != READ)
 		flushFile();
 
@@ -42,6 +69,9 @@ void FCB::closeFile()
 
 	// update rootdir entry
 	d->rootDir.updateEntry(fileDesc);
+
+	if(mode == APPEND || mode == WRITE)
+		remove();
 
 	d = nullptr;
 }
@@ -66,36 +96,84 @@ uint FCB::read(char* dst, uint size = 0)
 		{
 			if (currByteInBuff == BUFFER_SIZE) // next buffer
 			{
-				
+				if (mode == READWRITE) // flush file if neccesary
+					flushFile();
+
+				while (!FAT[++currSecNr / 2]); // move to next sector
+				d->readSector(currSecNr, &buffer);
+				currByteInBuff = 0;
 			}
 			dst[i] = buffer.rawData[currByteInBuff];
 		}
 	}
-	else
+	else                                         // no size specified
 	{
-		while (buffer.rawData[currByteInBuff] != '\n' && size > 200 && !eof()) // no size specified
+		while (buffer.rawData[currByteInBuff] != '\n' && size > 200 && !eof()) 
 		{
 			if (currByteInBuff == BUFFER_SIZE)
-				
+			{
+				if (mode == READWRITE) // flush file if neccesary
+					flushFile();
+
+				while (!FAT[++currSecNr / 2]); // move to next sector
+				d->readSector(currSecNr, &buffer);
+				currByteInBuff = 0;
+			}
 			dst[size] = buffer.rawData[currByteInBuff];
 			currByte++, currByteInBuff++, size++;
 		}
-		currByte++, currByteInBuff++;
 	}
 
 	dst[size] = '\0'; // enter null character at end of dst
 	return size;
 }
 
-void FCB::write(char *, uint)
+void FCB::write(char * src, uint size)
 {
-	cout << "Class: FCB, Function: write file" << endl;
+	// error handling
+	if (mode == NONE)
+		throw "ERROR: no file associated yet.";
+	if (mode != WRITE && mode != READWRITE && mode != APPEND)
+		throw "ERROR: the file isn't in edit mode.";
 
+	// when size isn't specified
+	if (size == 0)
+	{
+		size = strlen(src);
+		src[size] = '\n';
+		src[++size] = '\0';
+	}
+
+	// check if there is enough space
+	if (mode == WRITE || mode == APPEND)
+	{
+		if (currByte + size > fileDesc.fileSectors*BUFFER_SIZE)
+		{
+			d->extendFile(string(fileDesc.fileName), string(fileDesc.fileOwner), size);
+		}
+	}
+
+
+	for (int i = 0; i < size; i++, currByte++, currByteInBuff++)
+	{
+		if (currByteInBuff == BUFFER_SIZE)
+		{
+			flushFile();
+			currByteInBuff = 0;
+			while (!FAT[++currSecNr / 2]); // move to next sector
+		}
+
+		if (mode == APPEND || mode == WRITE)	// write mode
+		{
+			fileDesc.fileSize++;
+		}
+	}
+	
 }
 
 void FCB::seek(uint relativeTo, int bytes)
 {
-	int sectors; // the amount of sector to move
+	int sectors; // the amount of sectors to move
 
 	// error handling
 	if (mode == NONE)
@@ -104,10 +182,10 @@ void FCB::seek(uint relativeTo, int bytes)
 		throw "ERROR: file open for writing.";
 
 	// flush current sector if needed
-	if (mode == READWRITE)
+	if (mode == READWRITE && bytes + currByteInBuff > BUFFER_SIZE)
 		flushFile();
 
-	// finds the appropiate sector needed from memory according to the first paramter
+	// finds the appropriate sector needed from memory according to the first parameter
 	if (relativeTo == BEGIN)
 	{
 		// check for underflow
@@ -116,9 +194,6 @@ void FCB::seek(uint relativeTo, int bytes)
 		// check for overflow
 		if (bytes > fileDesc.fileSize)
 			bytes = fileDesc.fileSize;
-
-		// compute the amount of sectors needed to move from current sector
-		sectors = bytes / 1020 - currByte / 1020;
 
 		// update the data pointer 
 		currByte = bytes;
@@ -133,9 +208,6 @@ void FCB::seek(uint relativeTo, int bytes)
 		if (currByte + bytes > fileDesc.fileSize)
 			bytes = fileDesc.fileSize - currByte;
 
-		// compute the amount of sectors needed to move from current sector
-		sectors = (bytes - currByteInBuff) / 1020;
-
 		// update the data pointer 
 		currByte += bytes;
 		currByteInBuff = currByte % 1020;
@@ -149,12 +221,16 @@ void FCB::seek(uint relativeTo, int bytes)
 		if (bytes > 0)
 			bytes = 0;
 
-		// compute the amount of sectors needed to move from current sector
-		sectors = (bytes - (fileDesc.fileSize - currByte))/1020;
-
 		// update the data pointer 
 		currByte = fileDesc.fileSize - bytes;
 		currByteInBuff = currByte % 1020;
+	}
+
+
+	// compute the amount of sectors to move
+	if (bytes > 0)
+	{
+		bytes -= (BUFFER_SIZE - currByteInBuff);
 	}
 
 	// move forward
@@ -182,15 +258,14 @@ void FCB::seek(uint relativeTo, int bytes)
 
 void FCB::remove()
 {
-	cout << "Class: FCB, Function: delete file" << endl;
-
+	d->cutFile(string(fileDesc.fileName), string(fileDesc.fileOwner), fileDesc.fileSectors*BUFFER_SIZE - fileDesc.fileSize);
 }
 
 bool FCB::eof()
 {
 	if (mode == NONE)
 		throw "ERROR: no file associated yet.";
-	if (mode == WRITE)
+	if (mode == WRITE || mode == APPEND)
 		throw "ERROR: file is open for writing.";
 	if (currByte == fileDesc.fileSize)
 		return true;
