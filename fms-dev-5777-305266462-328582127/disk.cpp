@@ -393,7 +393,6 @@ void Disk::cutFile(string& name, string& owner, uint size)
 
 	fhd.fat &= ~toCut;
 
-	fhd.fileDesc.fileSize = size;
 	fhd.fileDesc.fileSectors = sectors;
 
 	writeSector(fhd.fileDesc.fileAddr, &fhd);
@@ -406,15 +405,19 @@ void Disk::openFile(FCB& fcb, string & name, string & owner = string(), uint mod
 	DirEntry entry = rootDir.findFile(name);
 	
 	if (entry.entryStatus != ACTIVE)
-		throw "ERROR: no file with such a name exist in the disk";
+		throw "ERROR: no file with that name exists on the disk";
 	if (mode != READ && entry.fileOwner != owner.substr(0, 12))
-		throw "ERROR: only the owner of a file can edit it";
+		throw "ERROR: only the owner of a file can open it for editing.";
 
 	if (checkFile(this, name) == READ && mode != READ)
-		throw "ERROR: this file is allready open, you can't edit it.";
+		throw "ERROR: this file is already open, and therefore can't be opened for editing.";
 	if (checkFile(this, name) != NONE && (fcb.mode == WRITE || fcb.mode == APPEND || fcb.mode == READWRITE))
-		throw "ERROR: can't open file. It is already open to read.";
+		throw "ERROR: this file is already open for editing and therefore can't be opened.";
 	
+	// extend file on APPEND mode
+	if (mode == APPEND)
+		extendFile(name, owner, 2 * BUFFER_SIZE);
+
 	// read file header from disk
 	FHD fhd;
 	readSector(entry.fileAddr, &fhd);
@@ -422,16 +425,8 @@ void Disk::openFile(FCB& fcb, string & name, string & owner = string(), uint mod
 	fcb.d = this;
 	fcb.mode = mode;
 	fcb.fileDesc = fhd.fileDesc;
-	
-	if (mode == WRITE) // trunc file
-		fcb.fileDesc.fileSize = 0;
-	if (mode == APPEND) // move to eof
-		for (int i = 0; i < fcb.fileDesc.fileSize;);
-		
-	
-	fcb.currSecNr = sec;
-	fcb.currByteInBuff = 0;
-	fcb.currByte = 0;
+
+
 	fcb.FAT = fhd.fat;
 }
 
